@@ -4,6 +4,7 @@ const config ={
     height: 500,
     backgroundColor: '#87CEEB',
     scene: {
+        preload: preload,
         create: create,
         update: update
     }
@@ -22,8 +23,18 @@ let targetX = 700;
 
 let infoText;
 let resultText;
+let sceneRef;
+
+function preload(){
+    this.load.audio('hit','cheering.wav')
+}
 
 function create() {
+
+    sceneRef = this;
+
+    sceneRef.hitSound = this.sound.add('hit');
+
     //palya
     this.add.rectangle(400, 300, 1000, 200, 0xffffff);
 
@@ -249,6 +260,14 @@ function checkResult() {
     // Külső kör sugara
     let maxRadius = 60;
 
+    resultText.setScale(1.5);
+
+    sceneRef.tweens.add({
+        targets: resultText,
+        scale: 1,
+        duration: 200
+    });
+
     if (error <= maxRadius) {
 
         // Pontszám lineáris csökkentése
@@ -258,13 +277,22 @@ function checkResult() {
             'Pontszám: ' + score
         );
 
+        if (sceneRef.hitSound) {
+        sceneRef.hitSound.play();
+        }
+
+        if (sceneRef.cameras) {
+            sceneRef.cameras.main.shake(200, 0.01);
+            sceneRef.cameras.main.flash(200, 0, 255, 0);
+        }
+
     } else {
 
         score = 0;
 
         resultText.setText(
-            'Mellé! \nPontszám: 0'
+            'Mellé! Pontszám: 0'
         );
     }
-}
 
+}
