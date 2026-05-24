@@ -13,12 +13,12 @@ const game = new Phaser.Game(config);
 
 let stone;
 let v = 0;
-let vo=300;
-let mu= 0.08; //surlodasi egyutthato
+let vo=350;
+let mu= 0.04; //surlodasi egyutthato
 let g= 9.81;
 let moving= false;
 
-let targetX = 800;
+let targetX = 700;
 
 let infoText;
 let resultText;
@@ -27,6 +27,12 @@ function create() {
     //palya
     this.add.rectangle(400, 300, 1000, 200, 0xffffff);
 
+    ///kulso kor
+    this.add.circle(targetX, 300, 60, 0xff0000); 
+
+    ///belso kor
+    this.add.circle(targetX, 300, 40, 0xffffff);
+    
     //cel
     this.add.circle(targetX, 300, 20, 0xff0000);
 
@@ -51,7 +57,10 @@ function create() {
         color: '#aa0000'
     });
 
-    // Sebesség szöveg
+    // =========================================
+    // KEZDŐSEBESSÉG INPUT
+    // =========================================
+
     let speedLabel = document.createElement('div');
     speedLabel.innerHTML = 'Kezdősebesség';
     speedLabel.style.position = 'absolute';
@@ -60,27 +69,30 @@ function create() {
     speedLabel.style.fontSize = '20px';
     document.body.appendChild(speedLabel);
 
-    // Sebesség slider
-    let speedSlider = document.createElement('input');
-    speedSlider.type = 'range';
-    speedSlider.min = 100;
-    speedSlider.max = 800;
-    speedSlider.value = vo;
+    // INPUT mező
+    let speedInput = document.createElement('input');
 
-    speedSlider.style.position = 'absolute';
-    speedSlider.style.top = '450px';
-    speedSlider.style.left = '20px';
-    speedSlider.style.width = '300px';
+    speedInput.type = 'number';
+    speedInput.value = vo;
 
-    document.body.appendChild(speedSlider);
+    speedInput.style.position = 'absolute';
+    speedInput.style.top = '450px';
+    speedInput.style.left = '20px';
+    speedInput.style.width = '120px';
+    speedInput.style.fontSize = '20px';
 
-    speedSlider.oninput = function () {
+    document.body.appendChild(speedInput);
+
+    speedInput.oninput = function () {
         vo = parseFloat(this.value);
     };
 
     // =========================================
 
-    // Súrlódás szöveg
+    // =========================================
+    // SÚRLÓDÁSI EGYÜTTHATÓ INPUT
+    // =========================================
+
     let muLabel = document.createElement('div');
     muLabel.innerHTML = 'Súrlódási együttható μ';
     muLabel.style.position = 'absolute';
@@ -89,22 +101,22 @@ function create() {
     muLabel.style.fontSize = '20px';
     document.body.appendChild(muLabel);
 
-    // Súrlódás slider
-    let muSlider = document.createElement('input');
-    muSlider.type = 'range';
-    muSlider.min = 0.001;
-    muSlider.max = 0.1;
-    muSlider.step = 0.001;
-    muSlider.value = mu;
+    // INPUT mező
+    let muInput = document.createElement('input');
 
-    muSlider.style.position = 'absolute';
-    muSlider.style.top = '450px';
-    muSlider.style.left = '380px';
-    muSlider.style.width = '300px';
+    muInput.type = 'number';
+    muInput.step = '0.001';
+    muInput.value = mu;
 
-    document.body.appendChild(muSlider);
+    muInput.style.position = 'absolute';
+    muInput.style.top = '450px';
+    muInput.style.left = '380px';
+    muInput.style.width = '120px';
+    muInput.style.fontSize = '20px';
 
-    muSlider.oninput = function () {
+    document.body.appendChild(muInput);
+
+    muInput.oninput = function () {
         mu = parseFloat(this.value);
     };
 
@@ -129,20 +141,25 @@ function create() {
 
     launchButton.onclick = function () {
 
-        if (!moving) {
+    // automatikus újraindítás
+        moving = false;
 
-            v = vo;
+        v = 0;
 
-            moving = true;
+        stone.x = 100;
 
-            resultText.setText('');
-        }
+        resultText.setText('');
+
+        // új indítás
+        v = vo;
+
+        moving = true;
     };
 
     // =========================================
     // RESET GOMB
     // =========================================
-
+    /*
     let resetButton = document.createElement('button');
 
     resetButton.innerHTML = 'RESET';
@@ -171,6 +188,7 @@ function create() {
 
         resultText.setText('');
     };
+    */
 }
 
 
@@ -203,7 +221,7 @@ function update(time, delta) {
         '\nCélpont x = ' + targetX.toFixed(0)
     );
 }
-
+/*
 function checkResult() {
 
     let error = Math.abs(stone.x - targetX);
@@ -221,3 +239,32 @@ function checkResult() {
         resultText.setText('Túl hosszú!');
     }
 }
+*/
+function checkResult() {
+
+    let error = Math.abs(stone.x - targetX);
+
+    let score = 0;
+
+    // Külső kör sugara
+    let maxRadius = 60;
+
+    if (error <= maxRadius) {
+
+        // Pontszám lineáris csökkentése
+        score = Math.round(10 + 90 * (1 - error / maxRadius));
+
+        resultText.setText(
+            'Pontszám: ' + score
+        );
+
+    } else {
+
+        score = 0;
+
+        resultText.setText(
+            'Mellé! \nPontszám: 0'
+        );
+    }
+}
+
