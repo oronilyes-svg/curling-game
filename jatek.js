@@ -20,7 +20,7 @@ const g = 9.81;
 const m = 20;
 let x = 0;
 let v = 0;
-let vo = 5;
+let vo = 5.5;
 let mu = 0.015;
 
 let moving = false;
@@ -82,7 +82,7 @@ function create() {
     let speedInput = document.createElement('input');
 
     speedInput.type = 'number';
-    speedInput.step = '0.1';
+    speedInput.step = '0.01';
     speedInput.value = vo;
 
     speedInput.style.position = 'absolute';
@@ -112,7 +112,7 @@ function create() {
     let muInput = document.createElement('input');
 
     muInput.type = 'number';
-    muInput.step = '0.001';
+    muInput.step = '0.00001';
     muInput.value = mu;
 
     muInput.style.position = 'absolute';
