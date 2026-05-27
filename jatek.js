@@ -215,8 +215,7 @@ function checkResult() {
         );
         resultText.setText(
             'Találat!\n' +
-            'Pontszám: ' + score +
-            '\nEltérés: ' + error.toFixed(2) + ' m'
+            'Pontszám: ' + score 
         );
 
         
