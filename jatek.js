@@ -237,9 +237,6 @@ function checkResult() {
     } else {
         resultText.setText(
             'Mellé!'
-            + '\nEltérés: '
-            + error.toFixed(2)
-            + ' m'
         );
     }
 }
